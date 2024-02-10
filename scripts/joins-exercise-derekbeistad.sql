@@ -59,4 +59,27 @@ GROUP BY distributors.company_name
 ORDER BY avg_budget DESC
 LIMIT 5;
 
+-- 6. How many movies in the dataset are distributed by a company which is not headquartered in California? Which of these movies has the highest imdb rating?
+SELECT distributors.headquarters,
+	specs.film_title,
+	rating.imdb_rating
+FROM distributors
+INNER JOIN specs
+ON distributors.distributor_id = specs.domestic_distributor_id
+INNER JOIN rating
+ON specs.movie_id = rating.movie_id
+WHERE distributors.headquarters NOT LIKE '%CA%'
+ORDER BY rating.imdb_rating DESC;
+-- 		A. 2 movies - Dirty Dancing
+
+-- 7. Which have a higher average rating, movies which are over two hours long or movies which are under two hours?
+SELECT CASE WHEN specs.length_in_min >= 120 THEN 'over_120'
+		WHEN specs.length_in_min < 120 THEN 'under_120'
+		END AS length_group,
+	AVG(rating.imdb_rating) AS avg_rating
+FROM specs
+INNER JOIN  rating
+ON specs.movie_id = rating.movie_id
+GROUP BY length_group;
+-- 		A. movies over 2 hours have a higher average rating.
 
